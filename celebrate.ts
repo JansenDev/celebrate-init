@@ -1,6 +1,8 @@
 import express, { ErrorRequestHandler } from "express";
-import { Joi, celebrate, Segments, isCelebrateError } from "celebrate";
+import { celebrate, Segments, isCelebrateError } from "celebrate";
 import BodyParser from "body-parser";
+import { BODY_ESQUEMA } from "./esquema";
+import { errorhanlder } from "./errorHandler";
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -12,16 +14,7 @@ app.get('/', (res, req, next) => {
 })
 
 const schemaLogin = {
-    [Segments.BODY]: Joi.object().keys({
-        name: Joi.string().trim(),
-        username: Joi.string().required(),
-        password: Joi.string().required(),
-        age: Joi.number().integer(),
-        valid: Joi.object({
-            isNumeric: Joi.boolean()
-        }),
-        more: Joi.string().trim(),
-    })
+    [Segments.BODY]: BODY_ESQUEMA
 }
 
 console.log("mas logs");
@@ -45,32 +38,6 @@ app.use((req, res, next) => {
 
 
 
-const errorhanlder: ErrorRequestHandler = (err, req, res, next) => {
-    console.log(JSON.stringify(err));
-    console.log(err);
-    if (isCelebrateError(err)) {
-        console.log('====================================');
-        console.log(JSON.stringify(err.details));
-
-        let x = '';
-        err.details.forEach((v, k) => {
-            x = k
-        })
-        const y = err.details.get(x)
-        console.log("y: " + y);
-
-        console.log("X: " + x);
-
-
-        return res.send({ err, message: y, details: err.details.get(x) })
-        console.log('====================================');
-    }
-    // console.log(isCelebrateError(err));
-    // console.log(err.joi);
-    // console.log(err.meta);
-
-    res.send({ message: err.message, err })
-}
 app.use(errorhanlder)
 
 
