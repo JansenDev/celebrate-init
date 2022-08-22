@@ -23,7 +23,12 @@ const schemaLogin = {
         more: Joi.string().trim(),
     })
 }
+
+console.log("mas logs");
+
+
 console.log("Creando cambios");
+
 
 const loginValidator = (req: any, res: any, next: any) => celebrate(schemaLogin)(req, res, next)
 const loginValidator2 = () => celebrate(schemaLogin)
